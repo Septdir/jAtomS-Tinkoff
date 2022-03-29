@@ -86,53 +86,48 @@ class plgJAtomSTinkoff extends CMSPlugin
 		// Prepare links
 		$OrderId = $order->order->id . '_' . Factory::getDate()->toUnix();
 
-		// Prepare amount
-		$amount = (float) $order->order->cost->value * 100;
-
-		$receipt = new stdClass();
-		if ($params->get('tinkoff_taxation', 'osn'))
-		{
-			$receipt->Taxation = $params->get('tinkoff_taxation', 'osn');
-		}
-
-		$product                = new stdClass();
-		$product->Name          = $tour->name;
-		$product->Quantity      = 1.00;
-		$product->Amount        = $amount;
-		$product->Price         = $amount;
-		$product->PaymentMethod = (string) $params->get('tinkoff_kassa_method', 'none');
-		$product->PaymentObject = (string) $params->get('tinkoff_kassa_object', 'full_payment');
-		if ((string) $params->get('tinkoff_vat', 'none') !== 'none') $product->Tax = $params->get('tinkoff_vat');
-		$product->measurementUnit = 'шт';
-		$receipt->Items           = array($product);
-
-		$payments                 = new stdClass();
-		$payments->Electronic     = $amount;
-		$payments->AdvancePayment = 0;
-		$payments->Credit         = 0;
-		$payments->Provision      = 0;
-		$receipt->Payments        = $payments;
+		// Prepare data
+		$amount  = (float) $order->order->cost->value * 100;
+		$name    = $this->generateProductName($order, $tour);
+		$product = array(
+			'Name'            => $name,
+			'Price'           => $amount,
+			'Quantity'        => 1.00,
+			'Amount'          => $amount,
+			'PaymentMethod'   => $params->get('tinkoff_kassa_method', 'full_prepayment'),
+			'PaymentObject'   => $params->get('tinkoff_kassa_object', 'service'),
+			'Tax'             => $params->get('tinkoff_vat'),
+			'measurementUnit' => "шт",
+			'ShopCode'        => $tour->id,
+		);
+		$receipt = array(
+			'Taxation' => $params->get('tinkoff_taxation', 'osn'),
+			'Payments' => array('Electronic' => $amount),
+			'Items'    => array($product),
+		);
 
 		$data = array(
 			'TerminalKey' => $params->get('tinkoff_terminal_key'),
 			'Amount'      => $amount,
-			'Description' => $this->generateProductLabel($order, $tour),
+			'Description' => $name,
 			'OrderId'     => $OrderId,
 		);
+
 		if (!empty($order->user))
 		{
 			if (!empty($order->user->email))
 			{
-				$data['Email']  = $order->user->email;
-				$receipt->Email = $order->user->email;
+				$data['Email']    = $order->user->email;
+				$receipt['Email'] = $order->user->email;
 			}
 
 			if (!empty($order->user->phone))
 			{
-				$data['Phone']  = $order->user->phone;
-				$receipt->Phone = $order->user->phone;
+				$data['Phone']    = $order->user->phone;
+				$receipt['Phone'] = $order->user->phone;
 			}
 		}
+		$data['Receipt'] = $receipt;
 
 		// Add secondary terminal
 		if ($params->get('tinkoff_secondary', 0))
@@ -146,8 +141,6 @@ class plgJAtomSTinkoff extends CMSPlugin
 			$tours = ArrayHelper::toInteger($params->get('tinkoff_tertiary_tours', array()));
 			if (in_array((int) $tour->id, $tours)) $data['terminal'] = 'tertiary';
 		}
-		// Add recent data
-		//	$data['Receipt']  = $receipt;
 
 		$jsonData          = new stdClass();
 		$jsonData->Receipt = $receipt;
@@ -418,9 +411,9 @@ class plgJAtomSTinkoff extends CMSPlugin
 	 *
 	 * @return string Generated product label.
 	 *
-	 * @since  1.0.0
+	 * @since  __DEPLOY_VERSION__
 	 */
-	protected function generateProductLabel($order, $tour)
+	protected function generateProductName($order, $tour)
 	{
 		$duration = false;
 		if (!empty($tour->duration->get('min')) && !empty($tour->duration->get('max')))

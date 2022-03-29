@@ -33,7 +33,7 @@
 		</field>
 		<field name="tinkoff_kassa_method" type="list"
 			   label="PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD"
-			   default="none">
+			   default="full_prepayment">
 			<option value="none">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_NOT</option>
 			<option value="full_prepayment">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_FULL_PREPAYMENT</option>
 			<option value="prepayment">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_PREPAYMENT</option>
