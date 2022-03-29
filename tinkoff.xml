@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension version="3.9" type="plugin" group="jatoms" method="upgrade">
+	<name>PLG_JATOMS_TINKOFF</name>
+	<author>Atom-S</author>
+	<creationDate>March 2022</creationDate>
+	<copyright>Copyright (c) 2017 - 2021 Atom-S LLC. All rights reserved.</copyright>
+	<license>https://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
+	<authorEmail>hello@atom-s.com</authorEmail>
+	<authorUrl>https://atom-s.com/</authorUrl>
+	<version>1.0.1</version>
+	<description>PLG_JATOMS_TINKOFF_DESCRIPTION</description>
+	<scriptfile>script.php</scriptfile>
+	<languages folder="language">
+		<language tag="en-GB">en-GB/en-GB.plg_jatoms_tinkoff.ini</language>
+		<language tag="en-GB">en-GB/en-GB.plg_jatoms_tinkoff.sys.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_jatoms_tinkoff.ini</language>
+		<language tag="ru-RU">ru-RU/ru-RU.plg_jatoms_tinkoff.sys.ini</language>
+	</languages>
+	<files>
+		<folder>forms</folder>
+		<filename plugin="tinkoff">tinkoff.php</filename>
+	</files>
+	<updateservers>
+		<server type="extension" priority="1" name="jAtoms - Tinkoff">
+			https://start.atom-s.com/solutions/update?element=plg_jatoms_tinkoff
+		</server>
+	</updateservers>
+</extension>
