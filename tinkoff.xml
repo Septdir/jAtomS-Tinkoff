@@ -7,7 +7,7 @@
 	<license>https://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>hello@atom-s.com</authorEmail>
 	<authorUrl>https://atom-s.com/</authorUrl>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<description>PLG_JATOMS_TINKOFF_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<languages folder="language">
