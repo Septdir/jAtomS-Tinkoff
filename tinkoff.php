@@ -190,14 +190,38 @@ class plgJAtomSTinkoff extends CMSPlugin
 		$status = (isset($statuses[$payStatus])) ? $statuses[$payStatus] : 'fail';
 
 		if ($status)
-
+		{
 			// Prepare transaction identifier
 			$payment_id = $response->get('PaymentId');
 
-		// Prepare order_id
-		list($order_id, $time) = explode('_', $response->get('OrderId'), 2);
+			// Prepare order_id
+			list($order_id, $time) = explode('_', $response->get('OrderId'), 2);
 
-		if (empty($time))
+			if (empty($time))
+			{
+				header('Content-Type: text');
+				echo 'OK';
+				$this->app->close(200);
+
+				return false;
+			}
+			$date = $time;
+
+			return array(
+				'id'                     => $order_id,
+				'sum_money'              => (float) $response->get('Amount') / 100,
+				'status'                 => $status,
+				'transaction_identifier' => $payment_id,
+				'date_unix'              => $date,
+				'hard_response'          => array(
+					'contentType'       => 'text',
+					'body'              => 'OK',
+					'error_contentType' => 'text',
+					'error_body'        => 'OK',
+				)
+			);
+		}
+		else
 		{
 			header('Content-Type: text');
 			echo 'OK';
@@ -205,21 +229,6 @@ class plgJAtomSTinkoff extends CMSPlugin
 
 			return false;
 		}
-		$date = $time;
-
-		return array(
-			'id'                     => $order_id,
-			'sum_money'              => (float) $response->get('Amount') / 100,
-			'status'                 => $status,
-			'transaction_identifier' => $payment_id,
-			'date_unix'              => $date,
-			'hard_response'          => array(
-				'contentType'       => 'text',
-				'body'              => 'OK',
-				'error_contentType' => 'text',
-				'error_body'        => 'OK',
-			)
-		);
 
 	}
 
