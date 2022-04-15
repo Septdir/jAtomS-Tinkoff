@@ -189,7 +189,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 
 		$status = (isset($statuses[$payStatus])) ? $statuses[$payStatus] : 'fail';
 
-		if ($status)
+		if ($status === 'paid')
 		{
 			// Prepare transaction identifier
 			$payment_id = $response->get('PaymentId');
