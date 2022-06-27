@@ -171,6 +171,15 @@ class plgJAtomSTinkoff extends CMSPlugin
 	{
 		if ($context !== 'com_jatoms.connect') return false;
 
+		if ($input['Status'] !== 'CONFIRMED')
+		{
+			header('Content-Type: text');
+			echo 'OK';
+			$this->app->close(200);
+
+			return false;
+		}
+
 		$data = [
 			'TerminalKey' => $input['TerminalKey'],
 			'PaymentId'   => $input['PaymentId'],
@@ -229,7 +238,6 @@ class plgJAtomSTinkoff extends CMSPlugin
 
 			return false;
 		}
-
 	}
 
 	/**
