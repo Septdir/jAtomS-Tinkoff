@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package    AtomS Connect - Tinkoff
+  ~ @version    1.0.3
+  ~ @author     Atom-S - atom-s.com
+  ~ @copyright  Copyright (c) 2017 - 2022 Atom-S LLC. All rights reserved.
+  ~ @license    GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
+  ~ @link       https://atom-s.com
+  -->
+
 <extension version="3.9" type="plugin" group="jatoms" method="upgrade">
 	<name>PLG_JATOMS_TINKOFF</name>
 	<author>Atom-S</author>
-	<creationDate>June 2022</creationDate>
+	<creationDate>November 2022</creationDate>
 	<copyright>Copyright (c) 2017 - 2021 Atom-S LLC. All rights reserved.</copyright>
 	<license>https://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>hello@atom-s.com</authorEmail>
 	<authorUrl>https://atom-s.com/</authorUrl>
-	<version>1.0.5-dev</version>
+	<version>1.0.3</version>
 	<description>PLG_JATOMS_TINKOFF_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<languages folder="language">
@@ -16,12 +25,27 @@
 		<language tag="ru-RU">ru-RU/ru-RU.plg_jatoms_tinkoff.ini</language>
 		<language tag="ru-RU">ru-RU/ru-RU.plg_jatoms_tinkoff.sys.ini</language>
 	</languages>
+	<config>
+		<fields name="params">
+			<fieldset name="basic">
+				<field name="debug"
+					   type="radio"
+					   default="0"
+					   class="btn-group btn-group-yesno"
+					   label="PLG_JATOMS_TINKOFF_PARAMS_DEBUG"
+				>
+					<option value="1">JYES</option>
+					<option value="0">JNO</option>
+				</field>
+			</fieldset>
+		</fields>
+	</config>
 	<files>
 		<folder>forms</folder>
 		<filename plugin="tinkoff">tinkoff.php</filename>
 	</files>
 	<updateservers>
-		<server type="extension" priority="1" name="jAtoms - Tinkoff">
+		<server type="extension" priority="1" name="AtomS Connect - Tinkoff">
 			https://start.atom-s.com/solutions/update?element=plg_jatoms_tinkoff
 		</server>
 	</updateservers>

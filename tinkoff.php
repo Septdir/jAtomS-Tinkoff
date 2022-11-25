@@ -1,11 +1,11 @@
 <?php
 /*
- * @package    jAtomS - CloudPayments Plugin
- * @version    __DEPLOY_VERSION__
+ * @package    AtomS Connect - Tinkoff
+ * @version    1.0.3
  * @author     Atom-S - atom-s.com
- * @copyright  Copyright (c) 2017 - 2021 Atom-S LLC. All rights reserved.
+ * @copyright  Copyright (c) 2017 - 2022 Atom-S LLC. All rights reserved.
  * @license    GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
- * @link       https://atom-s.com/
+ * @link       https://atom-s.com
  */
 
 defined('_JEXEC') or die;
@@ -15,9 +15,16 @@ use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
 use Joomla\CMS\Http\Http;
 use Joomla\CMS\Language\Text;
+use Joomla\CMS\Log\Log;
 use Joomla\CMS\Plugin\CMSPlugin;
 use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
+
+Log::addLogger(
+	['text_file' => 'plg_jatoms_payment_tinkoff.php'],
+	Log::ALL,
+	['plg_jatoms_payment_tinkoff']
+);
 
 class plgJAtomSTinkoff extends CMSPlugin
 {
@@ -142,6 +149,12 @@ class plgJAtomSTinkoff extends CMSPlugin
 			if (in_array((int) $tour->id, $tours)) $data['terminal'] = 'tertiary';
 		}
 
+		// Debug
+		if ($this->isDebug())
+		{
+			$this->log('Register order data', $data);
+		}
+
 		$jsonData          = new stdClass();
 		$jsonData->Receipt = $receipt;
 		$data['jsonData']  = (new Registry($jsonData))->toString('json', array('bitmask' => JSON_UNESCAPED_UNICODE));
@@ -170,6 +183,12 @@ class plgJAtomSTinkoff extends CMSPlugin
 	public function onJAtomSPaymentConfirm($context, $input, $params)
 	{
 		if ($context !== 'com_jatoms.connect') return false;
+
+		// Debug
+		if ($this->isDebug())
+		{
+			$this->log('Confirm input data', $input);
+		}
 
 		if ($input['Status'] !== 'CONFIRMED')
 		{
@@ -410,7 +429,16 @@ class plgJAtomSTinkoff extends CMSPlugin
 			$text = (!empty($matches[1])) ? $matches[1] : 'Unknown';
 			throw new Exception($text, $response->code);
 		}
-		$response = new Registry($response->body);
+
+		$body = $response->body;
+
+		$response = new Registry($body);
+
+		// Debug
+		if ($this->isDebug())
+		{
+			$this->log('Send request response', $response->toArray());
+		}
 
 		if (!$response->get('Success') && !empty($response->get('Message')))
 		{
@@ -491,5 +519,61 @@ class plgJAtomSTinkoff extends CMSPlugin
 		$values = implode('', array_values($result));
 
 		return hash('sha256', $values);
+	}
+
+	/**
+	 * Gets the debug param.
+	 *
+	 * @return  bool  True if debug on, false otherwise.
+	 *
+	 * @since   1.0.3
+	 */
+	private function isDebug(): bool
+	{
+		if (!isset($this->debug))
+		{
+			$this->debug = $this->params->get('debug', 0);
+		}
+
+		return (bool) $this->debug;
+	}
+
+	/**
+	 * Add log message
+	 *
+	 * @param   string        $name             Name of the log message
+	 * @param   string|array  $message          Log message
+	 * @param   bool          $needHideMessage  Flag to hide credentials in message string
+	 * @param   string        $type             Type of log
+	 *
+	 * @return  bool
+	 *
+	 * @since   1.0.3
+	 */
+	public function log($name, $message, $needHideMessage = false, $type = JLog::DEBUG): bool
+	{
+		$logCategory = 'plg_jatoms_payment_tinkoff';
+
+		if (empty($message))
+		{
+			return true;
+		}
+
+		if (is_array($message) || is_object($message))
+		{
+			$message = print_r($message, true);
+		}
+		else
+		{
+			if ($needHideMessage)
+			{
+				$message = substr($message, 0, 5) . str_repeat('*', 3);
+			}
+		}
+
+		// Add message to log
+		Log::add($name . ': ' . $message, $type, $logCategory);
+
+		return true;
 	}
 }
