@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ @package    AtomS Connect - Tinkoff
-  ~ @version    1.0.5
+  ~ @version    __DEPLOY_VERSION__
   ~ @author     Atom-S - atom-s.com
   ~ @copyright  Copyright (c) 2017 - 2022 Atom-S LLC. All rights reserved.
   ~ @license    GNU/GPL license: https://www.gnu.org/copyleft/gpl.html

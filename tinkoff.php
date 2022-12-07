@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    AtomS Connect - Tinkoff
- * @version    1.0.5
+ * @version    __DEPLOY_VERSION__
  * @author     Atom-S - atom-s.com
  * @copyright  Copyright (c) 2017 - 2022 Atom-S LLC. All rights reserved.
  * @license    GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -56,7 +56,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 	 *
 	 * @since  1.0.0
 	 */
-	public function onJAtomsPrepareForm($form, $data)
+	public function onjAtomSPrepareForm($form, $data)
 	{
 		if ($form->getName() === 'com_config.component')
 		{
