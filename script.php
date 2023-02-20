@@ -1,7 +1,7 @@
 <?php
 /*
  * @package    AtomS Connect - Tinkoff
- * @version    1.0.6
+ * @version    1.0.7
  * @author     Atom-S - atom-s.com
  * @copyright  Copyright (c) 2017 - 2022 Atom-S LLC. All rights reserved.
  * @license    GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
