@@ -11,8 +11,10 @@
 defined('_JEXEC') or die;
 
 use Joomla\CMS\Application\CMSApplication;
+use Joomla\CMS\Component\ComponentHelper;
 use Joomla\CMS\Factory;
 use Joomla\CMS\Form\Form;
+use Joomla\CMS\HTML\Helpers\StringHelper;
 use Joomla\CMS\Http\Http;
 use Joomla\CMS\Language\Text;
 use Joomla\CMS\Log\Log;
@@ -488,7 +490,11 @@ class plgJAtomSTinkoff extends CMSPlugin
 			}
 		}
 
-		return implode(', ', array($tour->name, $duration,
+		// Truncate tour name (Tinkoff limit for param - 128 symbols)
+		$tourName = StringHelper::truncate($tour->name, 80);
+		$tourID   = 'ID ' . $tour->id;
+
+		return implode(', ', array($tourID, $tourName, $duration,
 			Factory::getDate($order->order->start_date)->format(Text::_('COM_JATOMS_DATE_STANDARD')),
 			Text::sprintf('COM_JATOMS_ORDER_NUMBER', $order->order->id),
 		));
@@ -532,7 +538,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 	{
 		if (!isset($this->debug))
 		{
-			$this->debug = $this->params->get('debug', 0);
+			$this->debug = ComponentHelper::getParams('com_jatoms')->get('tinkoff_debug', 0);
 		}
 
 		return (bool) $this->debug;

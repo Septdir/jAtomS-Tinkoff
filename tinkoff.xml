@@ -28,15 +28,7 @@
 	<config>
 		<fields name="params">
 			<fieldset name="basic">
-				<field name="debug"
-					   type="radio"
-					   default="0"
-					   class="btn-group btn-group-yesno"
-					   label="PLG_JATOMS_TINKOFF_PARAMS_DEBUG"
-				>
-					<option value="1">JYES</option>
-					<option value="0">JNO</option>
-				</field>
+
 			</fieldset>
 		</fields>
 	</config>
