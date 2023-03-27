@@ -67,7 +67,7 @@
             <option value="lottery_prize">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_LOTTERY_PRIZE</option>
             <option value="intellectual_activity">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_INTELLECTUAL_ACTIVITY</option>
             <option value="payment">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_PAYMENT</option>
-            <option value="agent_commission ">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_AGENT_COMMISSION</option>
+            <option value="agent_commission">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_AGENT_COMMISSION</option>
             <option value="composite">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_COMPOSITE</option>
             <option value="another">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_ANOTHER</option>
         </field>

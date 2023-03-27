@@ -33,7 +33,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 	/**
 	 * Loads the application object.
 	 *
-	 * @var  CMSApplications
+	 * @var    /CMSApplications
 	 *
 	 * @since  1.0.0
 	 */
@@ -71,19 +71,20 @@ class plgJAtomSTinkoff extends CMSPlugin
 	/**
 	 * Method to create order.
 	 *
-	 * @param   string    $context  The context of the content being passed to the plugin.
-	 * @param   object    $order    Order data object.
-	 * @param   object    $tour     Tour data object.
-	 * @param   Registry  $params   jAtomS component params.
-	 * @param   array     $links    jAtomS plugin links.
-	 *
-	 * @throws  Exception
+	 * @param   string    $context     The context of the content being passed to the plugin.
+	 * @param   object    $order       Order data object.
+	 * @param   object    $tour        Tour data object.
+	 * @param   Registry  $params      Atom-S Connect component params.
+	 * @param   array     $links       Atom-S Connect plugin links.
+	 * @param   bool      $prepayment  Prepayment flag
 	 *
 	 * @return  array|false  Payment redirect data on success, False on failure.
 	 *
+	 * @throws  Exception
+	 *
 	 * @since  1.0.0
 	 */
-	public function onJAtomSPaymentPay($context, $order, $tour, $links, $params)
+	public function onJAtomSPaymentPay($context, $order, $tour, $links, $params, $prepayment)
 	{
 		if ($context !== 'com_jatoms.connect') return false;
 
@@ -96,7 +97,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 		$OrderId = $order->order->id . '_' . Factory::getDate()->toUnix();
 
 		// Prepare data
-		$amount  = (float) $order->order->cost->value * 100;
+		$amount  = (float) Factory::getApplication()->input->get('cost', '', 'float') * 100;
 		$name    = $this->generateProductName($order, $tour);
 		$product = array(
 			'Name'            => $name,
@@ -109,6 +110,14 @@ class plgJAtomSTinkoff extends CMSPlugin
 			'measurementUnit' => "шт",
 			'ShopCode'        => $tour->id,
 		);
+
+		// Check prepayment
+		if ($prepayment)
+		{
+			$product['PaymentMethod'] = 'prepayment';
+			$product['PaymentObject'] = 'payment';
+		}
+
 		$receipt = array(
 			'Taxation' => $params->get('tinkoff_taxation', 'osn'),
 			'Payments' => array('Electronic' => $amount),
@@ -116,26 +125,33 @@ class plgJAtomSTinkoff extends CMSPlugin
 		);
 
 		$data = array(
-			'TerminalKey' => $params->get('tinkoff_terminal_key'),
-			'Amount'      => $amount,
-			'Description' => $name,
-			'OrderId'     => $OrderId,
+			'TerminalKey'     => $params->get('tinkoff_terminal_key'),
+			'Amount'          => $amount,
+			'Description'     => $name,
+			'OrderId'         => $OrderId,
+			'NotificationURL' => $links['confirm'] . '?prepayment=' . $prepayment,
+			'DATA'            => array(
+				'prepayment' => $prepayment
+			)
 		);
 
 		if (!empty($order->user))
 		{
 			if (!empty($order->user->email))
 			{
-				$data['Email']    = $order->user->email;
-				$receipt['Email'] = $order->user->email;
+				$data['Email']         = $order->user->email;
+				$data['DATA']['Email'] = $order->user->email;
+				$receipt['Email']      = $order->user->email;
 			}
 
 			if (!empty($order->user->phone))
 			{
-				$data['Phone']    = $order->user->phone;
-				$receipt['Phone'] = $order->user->phone;
+				$data['Phone']         = $order->user->phone;
+				$data['DATA']['Phone'] = $order->user->phone;
+				$receipt['Phone']      = $order->user->phone;
 			}
 		}
+
 		$data['Receipt'] = $receipt;
 
 		// Add secondary terminal
@@ -174,11 +190,11 @@ class plgJAtomSTinkoff extends CMSPlugin
 	 *
 	 * @param   string    $context  The context of the content being passed to the plugin.
 	 * @param   array     $input    The input data array.
-	 * @param   Registry  $params   jAtomS component params.
-	 *
-	 * @throws  Exception
+	 * @param   Registry  $params   Atom-S Connect component params.
 	 *
 	 * @return  array|false  Create Atom-S payment confirm data on success, false on failure.
+	 *
+	 * @throws  Exception
 	 *
 	 * @since  1.0.0
 	 */
@@ -216,8 +232,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 		);
 
 		$payStatus = (!empty($response->get('Status'))) ? $response->get('Status') : 0;
-
-		$status = (isset($statuses[$payStatus])) ? $statuses[$payStatus] : 'fail';
+		$status    = (isset($statuses[$payStatus])) ? $statuses[$payStatus] : 'fail';
 
 		if ($status === 'paid')
 		{
@@ -235,7 +250,11 @@ class plgJAtomSTinkoff extends CMSPlugin
 
 				return false;
 			}
+
 			$date = $time;
+
+			// Check prepayment
+			$prepayment = $input['prepayment'] ?? false;
 
 			return array(
 				'id'                     => $order_id,
@@ -243,6 +262,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 				'status'                 => $status,
 				'transaction_identifier' => $payment_id,
 				'date_unix'              => $date,
+				'prepayment'             => $prepayment,
 				'hard_response'          => array(
 					'contentType'       => 'text',
 					'body'              => 'OK',
@@ -265,11 +285,11 @@ class plgJAtomSTinkoff extends CMSPlugin
 	 * Method to get payment data notification.
 	 *
 	 * @param   array     $data    Request data.
-	 * @param   Registry  $params  jAtomS component params.
-	 *
-	 * @throws Exception
+	 * @param   Registry  $params  Atom-S Connect component params.
 	 *
 	 * @return  Registry  Response data on success.
+	 *
+	 * @throws Exception
 	 *
 	 * @since  1.0.0
 	 */
@@ -337,11 +357,11 @@ class plgJAtomSTinkoff extends CMSPlugin
 	 *
 	 * @param   string    $context  The context of the content being passed to the plugin.
 	 * @param   array     $input    The input data array.
-	 * @param   Registry  $params   jAtomS component params.
-	 *
-	 * @throws  Exception
+	 * @param   Registry  $params   Atom-S Connect component params.
 	 *
 	 * @return  array|false  Create Atom-S payment success data on success, false on failure.
+	 *
+	 * @throws  Exception
 	 *
 	 * @since  1.0.0
 	 */
@@ -364,11 +384,11 @@ class plgJAtomSTinkoff extends CMSPlugin
 	 *
 	 * @param   string    $context  The context of the content being passed to the plugin.
 	 * @param   array     $input    The input data array.
-	 * @param   Registry  $params   jAtomS component params.
-	 *
-	 * @throws  Exception
+	 * @param   Registry  $params   Atom-S Connect component params.
 	 *
 	 * @return  array|false  Create Atom-S payment error data on success, false on failure.
+	 *
+	 * @throws  Exception
 	 *
 	 * @since  1.0.0
 	 */
@@ -391,11 +411,11 @@ class plgJAtomSTinkoff extends CMSPlugin
 	 *
 	 * @param   string    $method  The api method name.
 	 * @param   array     $data    Request data.
-	 * @param   Registry  $params  jAtomS component params.
-	 *
-	 * @throws Exception
+	 * @param   Registry  $params  Atom-S Connect component params.
 	 *
 	 * @return  Registry  Response data on success.
+	 *
+	 * @throws Exception
 	 *
 	 * @since  1.0.0
 	 */
