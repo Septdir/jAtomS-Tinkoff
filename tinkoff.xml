@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ @package    AtomS Connect - Tinkoff
-  ~ @version    __DEPLOY_VERSION__
+  ~ @version    1.1.0
   ~ @author     Atom-S - atom-s.com
   ~ @copyright  Copyright (c) 2017 - 2022 Atom-S LLC. All rights reserved.
   ~ @license    GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
@@ -11,12 +11,12 @@
 <extension version="3.9" type="plugin" group="jatoms" method="upgrade">
 	<name>PLG_JATOMS_TINKOFF</name>
 	<author>Atom-S</author>
-	<creationDate>February 2023</creationDate>
+	<creationDate>April 2023</creationDate>
 	<copyright>Copyright (c) 2017 - 2021 Atom-S LLC. All rights reserved.</copyright>
 	<license>https://www.gnu.org/copyleft/gpl.html GNU/GPL</license>
 	<authorEmail>hello@atom-s.com</authorEmail>
 	<authorUrl>https://atom-s.com/</authorUrl>
-	<version>1.0.8-dev</version>
+	<version>1.1.0</version>
 	<description>PLG_JATOMS_TINKOFF_DESCRIPTION</description>
 	<scriptfile>script.php</scriptfile>
 	<languages folder="language">
