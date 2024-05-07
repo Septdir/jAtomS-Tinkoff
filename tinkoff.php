@@ -23,9 +23,9 @@ use Joomla\Registry\Registry;
 use Joomla\Utilities\ArrayHelper;
 
 Log::addLogger(
-	['text_file' => 'plg_jatoms_payment_tinkoff.php'],
+	['text_file' => 'plg_jatoms_tinkoff.php'],
 	Log::ALL,
-	['plg_jatoms_payment_tinkoff']
+	['plg_jatoms_tinkoff']
 );
 
 class plgJAtomSTinkoff extends CMSPlugin
@@ -107,7 +107,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 			'PaymentMethod'   => $params->get('tinkoff_kassa_method', 'full_prepayment'),
 			'PaymentObject'   => $params->get('tinkoff_kassa_object', 'service'),
 			'Tax'             => $params->get('tinkoff_vat'),
-			'measurementUnit' => "шт",
+			'MeasurementUnit' => "шт",
 			'ShopCode'        => $tour->id,
 		);
 
@@ -139,14 +139,12 @@ class plgJAtomSTinkoff extends CMSPlugin
 		{
 			if (!empty($order->user->email))
 			{
-				$data['Email']         = $order->user->email;
 				$data['DATA']['Email'] = $order->user->email;
 				$receipt['Email']      = $order->user->email;
 			}
 
 			if (!empty($order->user->phone))
 			{
-				$data['Phone']         = $order->user->phone;
 				$data['DATA']['Phone'] = $order->user->phone;
 				$receipt['Phone']      = $order->user->phone;
 			}
@@ -167,15 +165,15 @@ class plgJAtomSTinkoff extends CMSPlugin
 			if (in_array((int) $tour->id, $tours)) $data['terminal'] = 'tertiary';
 		}
 
+//		$jsonData          = new stdClass();
+//		$jsonData->Receipt = $receipt;
+//		$data['jsonData']  = (new Registry($jsonData))->toString('json', array('bitmask' => JSON_UNESCAPED_UNICODE));
+
 		// Debug
 		if ($this->isDebug())
 		{
 			$this->log('Register order data', $data);
 		}
-
-		$jsonData          = new stdClass();
-		$jsonData->Receipt = $receipt;
-		$data['jsonData']  = (new Registry($jsonData))->toString('json', array('bitmask' => JSON_UNESCAPED_UNICODE));
 
 		//Create transaction request
 		$request = $this->sendRequest('/Init', $data, $params);
@@ -511,7 +509,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 		}
 
 		// Truncate tour name (Tinkoff limit for param - 128 symbols)
-		$tourName = StringHelper::truncate($tour->name, 80);
+		$tourName = JHtmlString::truncate($tour->name, 60);
 		$tourID   = 'ID ' . $tour->id;
 
 		return implode(', ', array($tourID, $tourName, $duration,
@@ -543,8 +541,15 @@ class plgJAtomSTinkoff extends CMSPlugin
 		ksort($result);
 		unset($result['Token']);
 		$values = implode('', array_values($result));
+		$token  = hash('sha256', $values);
 
-		return hash('sha256', $values);
+		// Debug
+		if ($this->isDebug())
+		{
+			$this->log('Token', $token);
+		}
+
+		return $token;
 	}
 
 	/**
@@ -573,32 +578,27 @@ class plgJAtomSTinkoff extends CMSPlugin
 	 * @param   string        $type             Type of log
 	 *
 	 * @return  bool
-	 *
-	 * @since   1.0.3
 	 */
-	public function log($name, $message, $needHideMessage = false, $type = JLog::DEBUG): bool
+	public function log($message, $data, $needHideMessage = false, $type = Log::DEBUG): bool
 	{
-		$logCategory = 'plg_jatoms_payment_tinkoff';
+		$logCategory = 'plg_' . $this->_type . '_' . $this->_name;
+		$message     = new Registry(['message' => $message]);
 
-		if (empty($message))
+		if (empty($data))
 		{
 			return true;
 		}
 
-		if (is_array($message) || is_object($message))
+		if (is_string($data) && $needHideMessage)
 		{
-			$message = print_r($message, true);
-		}
-		else
-		{
-			if ($needHideMessage)
-			{
-				$message = substr($message, 0, 5) . str_repeat('*', 3);
-			}
+			$data = substr($data, 0, 5) . str_repeat('*', 3);
 		}
 
+		$data = (new Registry(array('data' => $data)));
+		$data = $message->merge($data)->toString();
+
 		// Add message to log
-		Log::add($name . ': ' . $message, $type, $logCategory);
+		Log::add($data, $type, $logCategory);
 
 		return true;
 	}
