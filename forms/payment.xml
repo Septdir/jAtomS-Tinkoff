@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ @package    AtomS Connect - Tinkoff
+  ~ @version    __DEPLOY_VERSION__
+  ~ @author     Atom-S - atom-s.com
+  ~ @copyright  Copyright (c) 2017 - 2022 Atom-S LLC. All rights reserved.
+  ~ @license    GNU/GPL license: https://www.gnu.org/copyleft/gpl.html
+  ~ @link       https://atom-s.com
+  -->
+
+<form>
+    <fieldset name="payment">
+        <fields name="params">
+            <field type="note" class="alert alert-info w-100" label="PLG_JATOMS_TINKOFF"
+                   description="PLG_JATOMS_TINKOFF_DESCRIPTION"/>
+            <field type="payment_urls" label="COM_JATOMS_PARAMS_PAYMENT_URLS" plugin="tinkoff"/>
+            <field name="tinkoff_terminal_key" type="text"
+                   label="PLG_JATOMS_TINKOFF_PARAMS_TERMINAL_KEY"
+                   class="input-xlarge"
+                   autocomplete="false"/>
+            <field name="tinkoff_api_secret" type="password"
+                   label="PLG_JATOMS_TINKOFF_PARAMS_API_SECRET"
+                   class="input-xlarge"
+                   autocomplete="false"/>
+            <field name="tinkoff_vat" type="list"
+                   label="PLG_JATOMS_TINKOFF_PARAMS_VAT"
+                   default="none">
+                <option value="none">PLG_JATOMS_TINKOFF_PARAMS_VAT_NONE</option>
+                <option value="vat0">PLG_JATOMS_TINKOFF_PARAMS_VAT_0</option>
+                <option value="vat10">PLG_JATOMS_TINKOFF_PARAMS_VAT_10</option>
+                <option value="vat20">PLG_JATOMS_TINKOFF_PARAMS_VAT_20</option>
+                <option value="vat110">PLG_JATOMS_TINKOFF_PARAMS_VAT_110</option>
+                <option value="vat120">PLG_JATOMS_TINKOFF_PARAMS_VAT_120</option>
+            </field>
+            <field name="tinkoff_taxation" type="list"
+                   label="PLG_JATOMS_TINKOFF_PARAMS_TAXATION"
+                   default="osn">
+                <option value="osn">PLG_JATOMS_TINKOFF_PARAMS_TAXATION_OSN</option>
+                <option value="usn_income">PLG_JATOMS_TINKOFF_PARAMS_TAXATION_USN_INCOME</option>
+                <option value="usn_income_outcome">PLG_JATOMS_TINKOFF_PARAMS_TAXATION_USN_INCOME_OUTCOME</option>
+                <option value="envd">PLG_JATOMS_TINKOFF_PARAMS_TAXATION_ENVD</option>
+                <option value="esn">PLG_JATOMS_TINKOFF_PARAMS_TAXATION_ESN</option>
+                <option value="patent">PLG_JATOMS_TINKOFF_PARAMS_TAXATION_PATENT</option>
+            </field>
+            <field name="tinkoff_kassa_method" type="list"
+                   label="PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD"
+                   default="full_prepayment">
+                <option value="none">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_NOT</option>
+                <option value="full_prepayment">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_FULL_PREPAYMENT</option>
+                <option value="prepayment">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_PREPAYMENT</option>
+                <option value="advance">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_ADVANCE</option>
+                <option value="full_payment">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_FULL_PAYMENT</option>
+                <option value="partial_payment">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_PARTICAL_PAYMENT</option>
+                <option value="credit">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_CREDIT</option>
+                <option value="credit_payment">PLG_JATOMS_TINKOFF_PARAMS_KASSA_METHOD_CREDIT_PAYMENT</option>
+            </field>
+            <field name="tinkoff_kassa_object" type="list"
+                   label="PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT"
+                   default="service">
+                <option value="0">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_NOT</option>
+                <option value="commodity">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_COMMODITY</option>
+                <option value="excise">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_EXCISE</option>
+                <option value="job">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_JOB</option>
+                <option value="service">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_SERVICE</option>
+                <option value="gambling_bet">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_GAMBLING_BET</option>
+                <option value="gambling_prize">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_GAMBLING_PRIZE</option>
+                <option value="lottery">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_LOTTERY</option>
+                <option value="lottery_prize">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_LOTTERY_PRIZE</option>
+                <option value="intellectual_activity">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_INTELLECTUAL_ACTIVITY
+                </option>
+                <option value="payment">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_PAYMENT</option>
+                <option value="agent_commission">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_AGENT_COMMISSION</option>
+                <option value="composite">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_COMPOSITE</option>
+                <option value="another">PLG_JATOMS_TINKOFF_PARAMS_KASSA_OBJECT_ANOTHER</option>
+            </field>
+            <field name="tinkoff_success_atoms" type="radio"
+                   label="COM_JATOMS_PARAMS_PAYMENT_SUCCESS_ATOMS"
+                   class="btn-group btn-group-yesno"
+                   default="1">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="tinkoff_error_atoms" type="radio"
+                   label="COM_JATOMS_PARAMS_PAYMENT_ERROR_ATOMS"
+                   class="btn-group btn-group-yesno"
+                   default="1">
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+            <field name="tinkoff_debug"
+                   type="radio"
+                   default="0"
+                   class="btn-group btn-group-yesno"
+                   label="PLG_JATOMS_TINKOFF_PARAMS_DEBUG"
+            >
+                <option value="1">JYES</option>
+                <option value="0">JNO</option>
+            </field>
+        </fields>
+    </fieldset>
+</form>

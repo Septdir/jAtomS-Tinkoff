@@ -97,7 +97,8 @@ class plgJAtomSTinkoff extends CMSPlugin
 		$OrderId = $order->order->id . '_' . Factory::getDate()->toUnix();
 
 		// Prepare data
-		$amount  = (float) Factory::getApplication()->input->get('cost', '', 'float') * 100;
+		$input   = Factory::getApplication()->getInput();
+		$amount  = (float) $input->get('cost', '', 'float') * 100;
 		$name    = $this->generateProductName($order, $tour);
 		$product = array(
 			'Name'            => $name,
@@ -124,15 +125,20 @@ class plgJAtomSTinkoff extends CMSPlugin
 			'Items'    => array($product),
 		);
 
+		$extraData = array(
+			'prepayment'  => $prepayment,
+			'used_ops_id' => $input->get('used_ops_id'),
+			'identifier'  => $input->get('identifier'),
+			'invoice_id'  => $input->get('invoice_id'),
+		);
+
 		$data = array(
 			'TerminalKey'     => $params->get('tinkoff_terminal_key'),
 			'Amount'          => $amount,
 			'Description'     => $name,
 			'OrderId'         => $OrderId,
-			'NotificationURL' => $links['confirm'] . '?prepayment=' . $prepayment,
-			'DATA'            => array(
-				'prepayment' => $prepayment
-			)
+			'NotificationURL' => $links['confirm'] . '?prepayment=' . http_build_query($extraData),
+			'DATA'            => $extraData
 		);
 
 		if (!empty($order->user))
@@ -251,16 +257,16 @@ class plgJAtomSTinkoff extends CMSPlugin
 
 			$date = $time;
 
-			// Check prepayment
-			$prepayment = $input['prepayment'] ?? false;
-
 			return array(
 				'id'                     => $order_id,
 				'sum_money'              => (float) $response->get('Amount') / 100,
 				'status'                 => $status,
 				'transaction_identifier' => $payment_id,
 				'date_unix'              => $date,
-				'prepayment'             => $prepayment,
+				'prepayment'             => $input['prepayment'] ?? false,
+				'used_ops_id'            => $input['used_ops_id'] ?? false,
+				'identifier'             => $input['identifier'] ?? false,
+				'invoice_id'             => $input['invoice_id'] ?? false,
 				'hard_response'          => array(
 					'contentType'       => 'text',
 					'body'              => 'OK',
