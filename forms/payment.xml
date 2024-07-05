@@ -13,14 +13,16 @@
         <fields name="params">
             <field type="note" class="alert alert-info w-100" label="PLG_JATOMS_TINKOFF"
                    description="PLG_JATOMS_TINKOFF_DESCRIPTION"/>
-            <field type="payment_urls" label="COM_JATOMS_PARAMS_PAYMENT_URLS" plugin="tinkoff"/>
+            <field type="payment_links" label="COM_JATOMS_PARAMS_PAYMENT_URLS"/>
             <field name="tinkoff_terminal_key" type="text"
                    label="PLG_JATOMS_TINKOFF_PARAMS_TERMINAL_KEY"
                    class="input-xlarge"
+                   required="true"
                    autocomplete="false"/>
             <field name="tinkoff_api_secret" type="password"
                    label="PLG_JATOMS_TINKOFF_PARAMS_API_SECRET"
                    class="input-xlarge"
+                   required="true"
                    autocomplete="false"/>
             <field name="tinkoff_vat" type="list"
                    label="PLG_JATOMS_TINKOFF_PARAMS_VAT"

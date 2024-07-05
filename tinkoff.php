@@ -137,7 +137,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 			'Amount'          => $amount,
 			'Description'     => $name,
 			'OrderId'         => $OrderId,
-			'NotificationURL' => $links['confirm'] . '?prepayment=' . http_build_query($extraData),
+			'NotificationURL' => $links['confirm'] . '?' . http_build_query($extraData),
 			'DATA'            => $extraData
 		);
 
@@ -176,7 +176,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 //		$data['jsonData']  = (new Registry($jsonData))->toString('json', array('bitmask' => JSON_UNESCAPED_UNICODE));
 
 		// Debug
-		if ($this->isDebug())
+		if ($this->isDebug($params))
 		{
 			$this->log('Register order data', $data);
 		}
@@ -207,12 +207,12 @@ class plgJAtomSTinkoff extends CMSPlugin
 		if ($context !== 'com_jatoms.connect') return false;
 
 		// Debug
-		if ($this->isDebug())
+		if ($this->isDebug($params))
 		{
 			$this->log('Confirm input data', $input);
 		}
 
-		if ($input['Status'] !== 'CONFIRMED')
+		if (empty($input['Status']) || $input['Status'] !== 'CONFIRMED')
 		{
 			header('Content-Type: text');
 			echo 'OK';
@@ -378,7 +378,6 @@ class plgJAtomSTinkoff extends CMSPlugin
 
 		return array(
 			'order_id'      => $order_id,
-			'success_atoms' => ($params->get('tinkoff_success_atoms', 0)),
 			'request'       => false,
 		);
 	}
@@ -461,7 +460,7 @@ class plgJAtomSTinkoff extends CMSPlugin
 		$response = new Registry($body);
 
 		// Debug
-		if ($this->isDebug())
+		if ($this->isDebug($params))
 		{
 			$this->log('Send request response', $response->toArray());
 		}
@@ -549,27 +548,23 @@ class plgJAtomSTinkoff extends CMSPlugin
 		$values = implode('', array_values($result));
 		$token  = hash('sha256', $values);
 
-		// Debug
-		if ($this->isDebug())
-		{
-			$this->log('Token', $token);
-		}
-
 		return $token;
 	}
 
 	/**
 	 * Gets the debug param.
 	 *
+	 * @param   Registry  $params  Payment params
+	 *
 	 * @return  bool  True if debug on, false otherwise.
 	 *
 	 * @since   1.0.3
 	 */
-	private function isDebug(): bool
+	private function isDebug(Registry $params): bool
 	{
 		if (!isset($this->debug))
 		{
-			$this->debug = ComponentHelper::getParams('com_jatoms')->get('tinkoff_debug', 0);
+			$this->debug = $params->get('tinkoff_debug', 0);
 		}
 
 		return (bool) $this->debug;
