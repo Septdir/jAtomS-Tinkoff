@@ -1,1 +1,1 @@
-# jAtomS-Tinkoff
+# Atoms-Tinkoff

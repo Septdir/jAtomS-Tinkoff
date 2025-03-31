@@ -29,8 +29,12 @@
                    default="none">
                 <option value="none">PLG_JATOMS_TINKOFF_PARAMS_VAT_NONE</option>
                 <option value="vat0">PLG_JATOMS_TINKOFF_PARAMS_VAT_0</option>
+                <option value="vat5">PLG_JATOMS_TINKOFF_PARAMS_VAT_5</option>
+                <option value="vat7">PLG_JATOMS_TINKOFF_PARAMS_VAT_7</option>
                 <option value="vat10">PLG_JATOMS_TINKOFF_PARAMS_VAT_10</option>
                 <option value="vat20">PLG_JATOMS_TINKOFF_PARAMS_VAT_20</option>
+                <option value="vat105">PLG_JATOMS_TINKOFF_PARAMS_VAT_105</option>
+                <option value="vat107">PLG_JATOMS_TINKOFF_PARAMS_VAT_107</option>
                 <option value="vat110">PLG_JATOMS_TINKOFF_PARAMS_VAT_110</option>
                 <option value="vat120">PLG_JATOMS_TINKOFF_PARAMS_VAT_120</option>
             </field>
